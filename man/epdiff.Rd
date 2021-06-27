@@ -33,4 +33,7 @@ epdiff(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
 # Linear model
 mod_lm <- lm(Petal.Width ~ Sepal.Length + Sepal.Width, data=iris)
 epdiff(mod_lm, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
+epdiff(mod_lm, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], d=3)
+mod_lm2 <- lm(Petal.Width ~ Petal.Length + Sepal.Width, data=iris)
+epdiff(mod_lm2, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
 }

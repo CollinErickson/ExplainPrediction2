@@ -21,6 +21,9 @@
 #' # Linear model
 #' mod_lm <- lm(Petal.Width ~ Sepal.Length + Sepal.Width, data=iris)
 #' epdiff(mod_lm, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
+#' epdiff(mod_lm, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], d=3)
+#' mod_lm2 <- lm(Petal.Width ~ Petal.Length + Sepal.Width, data=iris)
+#' epdiff(mod_lm2, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
 epdiff <- function(mod, x1, x2, d) {
   stopifnot(nrow(x1)==1, nrow(x2)==1, ncol(x1)==ncol(x2))
 
@@ -36,10 +39,10 @@ epdiff <- function(mod, x1, x2, d) {
   if (missing(d)) {
     d <- ncol(x1)
   } else {
-    stopifnot(d <= ncol(x1), d>=1)
+    stopifnot(d <= ncol(x1), d>=2)
   }
-  df <- data.frame(ord=1:d, ind=NA, y=NA, name=colnames(x1))
-  for (i in 1:(ncol(x1)-1)) {
+  df <- data.frame(ord=1:d, ind=NA, y=NA, name=NA)
+  for (i in 1:(d-1)) {
     xt <- x1
     xt[which(!is.na(varuse))] <- x2[which(!is.na(varuse))]
     yi <- suppressMessages(predict(mod, xt))
@@ -64,6 +67,7 @@ epdiff <- function(mod, x1, x2, d) {
   }
   df$y[d] <- y2
   df$ind[d] <- which(is.na(varuse))[1]
+  df$name <- colnames(x1)[df$ind]
   # varuse
   # yorder
   # c(y1, y2)
