@@ -62,7 +62,7 @@ epdiff1 <- function(mod, x1, x2, d, predictfunc) {
 
   # df2 <- df[order(abs(df$y1to2 - y1) + abs(df$y2to1 - y2), decreasing = TRUE),]
   # Order them by most significant
-  df$i2 <- order(abs(df$y1to2 - y1) + abs(df$y2to1 - y2), decreasing = TRUE)
+  df$i2 <- order(order(abs(df$y1to2 - y1) + abs(df$y2to1 - y2), decreasing = TRUE))
   df2 <- df[df$i2<=d, ]
   ggplot2::ggplot(df2) +
     ggplot2::geom_segment(ggplot2::aes_string(xend="y1to2", y="i2+.1", yend="i2+.1"), x=y1) +
