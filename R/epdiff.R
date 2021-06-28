@@ -4,6 +4,7 @@
 #' @param x1 Input 1. Single row data frame or matrix.
 #' @param x2 Input 2. Single row data frame or matrix.
 #' @param d Max number of input dimensions to use.
+#' @param predictfunc Func to use to predict. Defaults to `predict`.
 #'
 #' @return ggplot object showing effect
 #' @export
@@ -24,14 +25,17 @@
 #' epdiff(mod_lm, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], d=3)
 #' mod_lm2 <- lm(Petal.Width ~ Petal.Length + Sepal.Width, data=iris)
 #' epdiff(mod_lm2, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
-epdiff <- function(mod, x1, x2, d) {
+epdiff <- function(mod, x1, x2, d, predictfunc) {
   stopifnot(nrow(x1)==1, nrow(x2)==1, ncol(x1)==ncol(x2))
 
+  if (missing(predictfunc)) {
+    predictfunc <- predict
+  }
 
   # predict(m1, x1)
   # predict(m1, x2)
-  y1 <- suppressMessages(predict(mod, x1))
-  y2 <- suppressMessages(predict(mod, x2))
+  y1 <- suppressMessages(predictfunc(mod, x1))
+  y2 <- suppressMessages(predictfunc(mod, x2))
   varuse <- rep(NA, ncol(x1))
   xt <- x1
   indexorder <- c()
@@ -45,14 +49,14 @@ epdiff <- function(mod, x1, x2, d) {
   for (i in 1:(d-1)) {
     xt <- x1
     xt[which(!is.na(varuse))] <- x2[which(!is.na(varuse))]
-    yi <- suppressMessages(predict(mod, xt))
+    yi <- suppressMessages(predictfunc(mod, xt))
     yabsdiff <- Inf
     yabsdiffind <- NA
     for (j in which(is.na(varuse))) {
       # print(c(i,j))
       xj <- xt
       xj[j] <- x2[j]
-      yj <- suppressMessages(predict(mod, xj))
+      yj <- suppressMessages(predictfunc(mod, xj))
       if (abs(yj - y2) < yabsdiff) {
         ybest <- yj
         yabsdiff <- abs(yj-y2)
