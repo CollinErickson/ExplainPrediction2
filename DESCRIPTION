@@ -3,9 +3,9 @@ Type: Package
 Title: Explain Difference in Predictions From a Model
 Version: 0.1.0
 Author: Collin Erickson
-Maintainer: Collin Erickson <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: Collin Erickson <collinberickson@gmail.com>
+Description: Explain the differences in predictions from a model.
+    Useful for trying to understand why things have different predictions.
 License: GPL (>= 3)
 Suggests: gbm, lattice, ggplot2
 Encoding: UTF-8
