@@ -4,7 +4,7 @@
 \alias{epdiff1}
 \title{Explain difference between predictions from a model}
 \usage{
-epdiff1(mod, x1, x2, d, predictfunc)
+epdiff1(mod, x1, x2, d, predictfunc, predictfuncwithmod)
 }
 \arguments{
 \item{mod}{Model}
@@ -15,7 +15,10 @@ epdiff1(mod, x1, x2, d, predictfunc)
 
 \item{d}{Max number of input dimensions to use.}
 
-\item{predictfunc}{Func to use to predict. Defaults to `predict`.}
+\item{predictfunc}{Func to use to predict. Defaults to `predict`.
+Takes in model and data.}
+
+\item{predictfuncwithmod}{Func to use to predict. Only takes in data.}
 }
 \value{
 ggplot object showing effect
@@ -31,6 +34,11 @@ x2 <- iris[2,]
 epdiff1(m1, x1, x2)
 epdiff1(m1, iris[12,], iris[20,])
 epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
+epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], predictfunc=predict)
+epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),],
+    predictfuncwithmod=function(xx){suppressMessages(predict(m1, xx))})
+epdiff1(NA, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),],
+    predictfuncwithmod=function(xx){suppressMessages(predict(m1, xx))})
 
 # Linear model
 mod_lm <- lm(Petal.Width ~ Sepal.Length + Sepal.Width, data=iris)
