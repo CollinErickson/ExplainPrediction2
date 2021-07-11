@@ -4,7 +4,17 @@
 \alias{epdiff1}
 \title{Explain difference between predictions from a model}
 \usage{
-epdiff1(mod, x1, x2, d, predictfunc, predictfuncwithmod)
+epdiff1(
+  mod,
+  x1,
+  x2,
+  d,
+  predictfunc,
+  predictfuncwithmod,
+  name1,
+  name2,
+  namesfromcol
+)
 }
 \arguments{
 \item{mod}{Model}
@@ -19,6 +29,12 @@ epdiff1(mod, x1, x2, d, predictfunc, predictfuncwithmod)
 Takes in model and data.}
 
 \item{predictfuncwithmod}{Func to use to predict. Only takes in data.}
+
+\item{name1}{Name x1}
+
+\item{name2}{Name for x2}
+
+\item{namesfromcol}{Column of x1/x2 to get name from}
 }
 \value{
 ggplot object showing effect
@@ -39,6 +55,8 @@ epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),],
     predictfuncwithmod=function(xx){suppressMessages(predict(m1, xx))})
 epdiff1(NA, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),],
     predictfuncwithmod=function(xx){suppressMessages(predict(m1, xx))})
+epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], name1='aa', name2='bb')
+epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], namesfromcol="Species")
 
 # Linear model
 mod_lm <- lm(Petal.Width ~ Sepal.Length + Sepal.Width, data=iris)

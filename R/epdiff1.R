@@ -7,6 +7,9 @@
 #' @param predictfunc Func to use to predict. Defaults to `predict`.
 #' Takes in model and data.
 #' @param predictfuncwithmod Func to use to predict. Only takes in data.
+#' @param name1 Name x1
+#' @param name2 Name for x2
+#' @param namesfromcol Column of x1/x2 to get name from
 #'
 #' @return ggplot object showing effect
 #' @export
@@ -25,6 +28,8 @@
 #'     predictfuncwithmod=function(xx){suppressMessages(predict(m1, xx))})
 #' epdiff1(NA, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),],
 #'     predictfuncwithmod=function(xx){suppressMessages(predict(m1, xx))})
+#' epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], name1='aa', name2='bb')
+#' epdiff1(m1, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], namesfromcol="Species")
 #'
 #' # Linear model
 #' mod_lm <- lm(Petal.Width ~ Sepal.Length + Sepal.Width, data=iris)
@@ -32,7 +37,8 @@
 #' epdiff1(mod_lm, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),], d=3)
 #' mod_lm2 <- lm(Petal.Width ~ Petal.Length + Sepal.Width, data=iris)
 #' epdiff1(mod_lm2, iris[sample(1:nrow(iris), 1),], iris[sample(1:nrow(iris), 1),])
-epdiff1 <- function(mod, x1, x2, d, predictfunc, predictfuncwithmod) {
+epdiff1 <- function(mod, x1, x2, d, predictfunc, predictfuncwithmod,
+                    name1, name2, namesfromcol) {
   stopifnot(nrow(x1)==1, nrow(x2)==1, ncol(x1)==ncol(x2))
 
   if (missing(predictfunc)) {
@@ -40,6 +46,20 @@ epdiff1 <- function(mod, x1, x2, d, predictfunc, predictfuncwithmod) {
   }
   if (missing(predictfuncwithmod)) {
     predictfuncwithmod <- function(x) {suppressMessages(predictfunc(mod, x))}
+  }
+  if (missing(name1)) {
+    if (missing(namesfromcol)) {
+      name1 <- "y1"
+    } else {
+      name1 <- x1[[namesfromcol]][[1]]
+    }
+  }
+  if (missing(name2)) {
+    if (missing(namesfromcol)) {
+      name2 <- "y2"
+    } else {
+      name2 <- x2[[namesfromcol]][[1]]
+    }
   }
 
   # predict(m1, x1)
@@ -86,7 +106,7 @@ epdiff1 <- function(mod, x1, x2, d, predictfunc, predictfuncwithmod) {
     ggplot2::geom_text(ggplot2::aes_string(label="name", y="i2"),  x=.5*(y1+y2), vjust='bottom') +
     ggplot2::geom_point(ggplot2::aes_string(x="y1to2", y="i2+.1")) +
     ggplot2::geom_point(ggplot2::aes_string(x="y2to1", y="i2")) +
-    ggplot2::annotate("text", x=(y1+y2)/2 + 1.2*(c(y1, y2) - (y1+y2)/2), y=1.5,label=c("y1", "y2"), color="red") +
+    ggplot2::annotate("text", x=(y1+y2)/2 + 1.2*(c(y1, y2) - (y1+y2)/2), y=1.5,label=c(name1, name2), color="red") +
     ggplot2::scale_y_reverse() +
     ggplot2::xlab("Predicted value") +
     ggplot2::ylab("Most important inputs")
